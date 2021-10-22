@@ -10,7 +10,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+//import org.springframework.data.mongodb.core.mapping.Document;
+//import org.springframework.data.mongodb.repository.Query;
+import org.springframework.data.r2dbc.repository.Query;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
@@ -30,6 +32,8 @@ class SampleDataInitializer {
 
 	private final ReservationRepository reservationRepository;
 
+//	private final
+
 	@EventListener(ApplicationReadyEvent.class)
 	public void ready() {
 
@@ -48,18 +52,19 @@ class SampleDataInitializer {
 	}
 }
 
-interface ReservationRepository extends ReactiveCrudRepository<Reservation, String> {
+interface ReservationRepository extends ReactiveCrudRepository<Reservation, Integer> {
 
+	@Query("select * from reservation where name = $1 ")
 	Flux<Reservation> findByName(String name);
 }
 
-@Document
+//@Document
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 class Reservation {
 
 	@Id
-	private String id;
+	private Integer id;
 	private String name;
 }
